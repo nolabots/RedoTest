@@ -7,14 +7,20 @@ package org.usfirst.frc.team5953.robot;
  */
 public class OI {
 
-    public OI(Robot redo) {
+    public OI(Redo redo) {
     	
     	// You can put Some buttons on the SmartDashboard
-   
+    	//maybe we can add buttons onto the dashboard for extra functionality?
+    	
+    	
         //connect some buttons to commands
+    	//here is an example
         if (redo.xbox.getAButton()){
         	redo.autonomousPeriodic();
         }
+        
+       //for the rest of the controls for an XboxController, 
+       //add methods to control the robot
         
     }
 }
