@@ -15,11 +15,13 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  * directory.
  */
 public class Redo extends IterativeRobot {
-	RobotDrive myRobot;
+	public RobotDrive myRobot;
 	XboxController xbox;
 	Joystick stick;
 	int autoLoopCounter;
 	OI oi;
+	boolean teleop;
+	boolean auto;
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -30,12 +32,16 @@ public class Redo extends IterativeRobot {
     	stick = new Joystick(0);
     	xbox = new XboxController(0);
     	oi = new OI(this);
+    	teleop = false;
+    	auto = false;
     }
     
     /**
      * This function is run once each time the robot enters autonomous mode
      */
     public void autonomousInit() {
+    	teleop = false;
+    	auto = true;
     	autoLoopCounter = 0;
     }
 
@@ -45,24 +51,31 @@ public class Redo extends IterativeRobot {
     public void autonomousPeriodic() {
     	if(autoLoopCounter < 100) //Check if we've completed 100 loops (approximately 2 seconds)
 		{
-			myRobot.drive(-0.5, 0.0); 	// drive forwards half speed
+			myRobot.drive(0.5, 0.0); 	// drive forwards half speed
 			autoLoopCounter++;
 			} else {
 			myRobot.drive(0.0, 0.0); 	// stop robot
 		}
+    	autoLoopCounter ++;
+    	
+    	if(autoLoopCounter < 300 && autoLoopCounter > 100){
+    	}
+    	    	
+    	
     }
     
     /**
      * This function is called once each time the robot enters tele-operated mode
      */
     public void teleopInit(){
+    
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        myRobot.arcadeDrive(xbox);
+        myRobot.tankDrive(xbox.getLeftStickY(), xbox.getRightStickY());
     }
     
     /**
@@ -70,6 +83,16 @@ public class Redo extends IterativeRobot {
      */
     public void testPeriodic() {
     	LiveWindow.run();
+    }
+    	
+    public void driveForward(){ 
+			myRobot.drive(0.5, 0.0); 	// drive forwards half speed
+			autoLoopCounter++;
+
+    }
+    
+    public void makeItStop(){
+		myRobot.drive(0.0, 0.0); 	// stop robot
     }
     
 }
