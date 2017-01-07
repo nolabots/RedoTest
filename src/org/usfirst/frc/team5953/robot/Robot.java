@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  */
 public class Robot extends IterativeRobot {
 	public RobotDrive myRobot;
-	XboxController xbox;
+	XboxController xboxBlack;
+	XboxController xboxClear;
+
 	Joystick stick;
 	int autoLoopCounter;
 	OI oi;
@@ -31,7 +33,9 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	myRobot = new RobotDrive(0,1);
-    	xbox = new XboxController(0);
+    	xboxBlack = new XboxController(0);
+    	xboxClear = new XboxController(1);
+
     	oi = new OI(this);
     	servo = new Servo(7);
     	
@@ -78,8 +82,8 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        myRobot.tankDrive(-xbox.getLeftStickY(), -xbox.getRightStickY());
-        if(xbox.getAButton()){
+        myRobot.tankDrive(-xboxClear.getLeftStickY(), -xboxClear.getRightStickY());
+        if(xboxClear.getAButton()){
         	servo.setAngle(0);
         } else {
         	servo.setAngle(90);
