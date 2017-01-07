@@ -18,19 +18,18 @@ public class OI {
     	//here is an example
         if (redo.xbox.getAButton()){
         	redo.driveForward();
+        }else{
+          	redo.makeItStop();
         }
         
-        if(!redo.xbox.getAButton()){
-        	redo.makeItStop();
-        }
-        
-        if(redo.xbox.getRightBumper()){
-        	redo.autonomousInit();
-        	redo.autonomousPeriodic();
+        while(redo.xbox.getRightBumper()){
+        	//do something specific, or do a script of commands
         }
 
        //for the rest of the controls for an XboxController, 
        //add methods to control the robot
+        //x, y, a b, leftStick, rightStick, dPad, leftTrigger, rightTrigger, back, start
+        //left/rightStick X, left/rightStick Y
         
     }
     
