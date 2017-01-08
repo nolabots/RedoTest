@@ -9,8 +9,9 @@ import edu.wpi.first.wpilibj.RobotDrive;
  */
 public class OI {
 
-    public OI(Redo redo) {
-    	
+
+    public OI(Robot redo) {
+
     	// You can put Some buttons on the SmartDashboard
     	//maybe we can add buttons onto the dashboard for extra functionality?
     	
