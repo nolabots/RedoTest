@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.CameraServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,6 +34,8 @@ public class Robot extends IterativeRobot {
 	double angle;
 	double rate;
 	boolean driveLeft;
+	double startAngle;
+	static CameraServer camera;
 	
 	
 	
@@ -40,16 +43,27 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+	
+	public int factorial (int n){
+		 if (n == 0)
+		      return 1;
+		   else
+		      return (n * factorial(n-1));
+	}
+	
     public void robotInit() {
     	myRobot = new RobotDrive(0,1);
-    	xboxBlack = new XboxController(0);
-    	xboxClear = new XboxController(1);
+    	xboxBlack = new XboxController(1);
+    	xboxClear = new XboxController(0);
     	gyro = new ADXRS450_Gyro();
     	oi = new OI(this);
     	servo = new Servo(7);
     	ballControl = new VictorSP(4);
     	angle = 0.0;
     	rate = 0.0;
+    	camera = CameraServer.getInstance();
+    	camera.setQuality(50);
+    	camera.startAutomaticCapture("cam0");
     	
     }
     
@@ -58,7 +72,10 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousInit() {
     	autoLoopCounter = 0;
-	    driveLeft = false;
+	    driveLeft = true;
+	    gyro.calibrate();
+		startAngle = gyro.getAngle();
+
     }
 
     /**
@@ -80,47 +97,53 @@ public class Robot extends IterativeRobot {
 //    	}
 //    	   
 		//set gyro to 0
-		gyro.calibrate();
+			gyroExample();
+			//driveStraight();
 		
-    	while(true){
 
-    		//keep track of gyro's rate
-    		System.out.println("Rate: " + gyro.getRate());
-    		System.out.println("Angle: " + gyro.getAngle()); 
-
-    		angle = gyro.getAngle();
-    		rate = gyro.getRate();
-    	    		
-    	    //turn a certain distance
-    	    myRobot.drive(0.25, 1);
-
-    	    
-    	    if(angle >= 90){
-    	    	driveLeft = true;
-    	    }
-    	    
-    	    if(angle <= -90){
-    	    	driveLeft = false;
-    	    }
-    	    
-    	    while(driveLeft){
-    	    	myRobot.drive(0.25, -1);
-    	    }
-    	    
-    	    while(!driveLeft){
-    	    	myRobot.drive(0.25, 1);
-    	    }  
-    	    
-    	    //at the beginning, turn right
-    	    //after 90 degrees, turn left
-    	    //after -180 degrees, turn right or turn to 270/-90
-    	    //reach a threshold and turn the other direction
-    	    //myRobot.drive(0.25, -1);
-    		
-    	}
+    }
+    
+    public void driveStraight() {
+    	angle = gyro.getAngle();
+    	rate = gyro.getRate();
     	
+    	myRobot.drive(0.5, 0);
+ 
+    }
+    
+    public void gyroExample() {
+    	
+		//keep track of gyro's rate
+
+
+		angle = gyro.getAngle();
+		rate = gyro.getRate();
+		
+   	System.out.println("startAngle: " + startAngle);
+		System.out.println("Rate: " + rate);
+		System.out.println("Angle: " + angle); 
+	    System.out.println("driveLeft: " + driveLeft);
+
+	    //turn a certain distance
+	    
+	    if(angle >= startAngle + 90){
+	    	driveLeft = false;
+	    }
+	    
+	    if(angle <= startAngle - 90){
+	    	driveLeft = true;
+	    }
+	    
+	    if(driveLeft){
+	    	myRobot.tankDrive(0.25, -0.25, false);
+	    }
+	    
+	    if(!driveLeft){
+	    	myRobot.tankDrive(-0.27, 0.27, false);
+	    }      	
     	
     }
+    
     
     /**
      * This function is called once each time the robot enters tele-operated mode
@@ -134,8 +157,9 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        myRobot.tankDrive(Math.pow(-xboxClear.getLeftStickY(), 3), 
-        				  Math.pow(-xboxClear.getRightStickY(), 3));
+        myRobot.tankDrive(-xboxClear.getLeftStickY(), 
+        				 -xboxClear.getRightStickY(),
+        				  false);
         if(xboxClear.getAButton()){
         	servo.setAngle(0);
         } else {
